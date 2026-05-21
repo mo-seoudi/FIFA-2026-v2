@@ -53,9 +53,11 @@ export default function FixtureCard({ match, timeMode, flagMap }) {
 
         <span>·</span>
 
-        <span>
-          {realVenue} ({match.city})
-        </span>
+        <>
+          <span>{realVenue}</span>
+          <span>·</span>
+          <span>{match.city}</span>
+        </>
       </div>
     </article>
   );
