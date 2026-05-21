@@ -1,3 +1,5 @@
+import stadiums from "../data/stadiums.json";
+
 function TeamFlag({ code, name }) {
   if (!code) {
     return <span className="text-3xl leading-none">🏳️</span>;
@@ -13,6 +15,8 @@ function TeamFlag({ code, name }) {
 }
 
 export default function FixtureCard({ match, timeMode, flagMap }) {
+  const realVenue = stadiums[match.city] || match.venue;
+
   return (
     <article className="group bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md md:px-8">
       <div className="grid items-center gap-4 md:grid-cols-[1fr_auto_1fr]">
@@ -39,11 +43,18 @@ export default function FixtureCard({ match, timeMode, flagMap }) {
 
       <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-sm text-[#243b63]">
         <span>{match.phase}</span>
+
+        {match.group && (
+          <>
+            <span>·</span>
+            <span>{match.group}</span>
+          </>
+        )}
+
         <span>·</span>
-        <span>{match.group}</span>
-        <span>·</span>
+
         <span>
-          {match.venue} ({match.city})
+          {realVenue} ({match.city})
         </span>
       </div>
     </article>
