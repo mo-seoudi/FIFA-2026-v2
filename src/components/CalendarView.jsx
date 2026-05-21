@@ -1,113 +1,214 @@
-export default function CalendarView({ fixtures, timeMode, flagMap }) {
+import { Building2, MapPin, Trophy, Users, X } from "lucide-react";
+import { useMemo, useState } from "react";
+
+export default function CalendarView({ fixtures, timeMode }) {
+  const [calendarMode, setCalendarMode] = useState("teams");
+  const [selectedMatch, setSelectedMatch] = useState(null);
+
   const dateKey = timeMode === "uae" ? "date_uae" : "date";
   const timeKey = timeMode === "uae" ? "time_uae" : "time_local";
 
-  const months = [
-    buildTournamentMonth(2026, 5, fixtures, dateKey, timeKey), // June
-    buildTournamentMonth(2026, 6, fixtures, dateKey, timeKey), // July
-  ];
+  const months = useMemo(() => {
+    return [
+      buildTournamentMonth(2026, 5, fixtures, dateKey, timeKey),
+      buildTournamentMonth(2026, 6, fixtures, dateKey, timeKey),
+    ];
+  }, [fixtures, dateKey, timeKey]);
 
   return (
-    <section className="space-y-8">
-      {months.map((month) => (
-        <div key={month.key} className="rounded-3xl bg-white p-4 shadow-sm">
-          <div className="mb-4 flex items-end justify-between">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#004b82]">
-                FIFA World Cup 2026
-              </p>
-              <h2 className="text-2xl font-black tracking-tight">
-                {month.label}
-              </h2>
-            </div>
-
-            <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-bold text-neutral-600">
-              {timeMode === "local" ? "Local dates" : "UAE dates"}
-            </span>
+    <>
+      <section className="space-y-8">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl bg-white p-4 shadow-sm">
+          <div>
+            <h2 className="text-xl font-black tracking-tight">
+              Tournament Calendar
+            </h2>
+            <p className="text-sm text-neutral-500">
+              June and July 2026 World Cup fixtures
+            </p>
           </div>
 
-          <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-black uppercase tracking-wide text-neutral-400">
-            {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-              <div key={day} className="py-1">
-                {day}
-              </div>
-            ))}
-          </div>
+          <div className="flex gap-2 rounded-2xl bg-neutral-100 p-1">
+            <button
+              onClick={() => setCalendarMode("teams")}
+              className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
+                calendarMode === "teams"
+                  ? "bg-[#004b82] text-white shadow-sm"
+                  : "text-neutral-600"
+              }`}
+            >
+              <Users size={16} />
+              Teams
+            </button>
 
-          <div className="mt-1 grid grid-cols-7 gap-1">
-            {month.days.map((day) => (
-              <div
-                key={day.key}
-                className={`min-h-[86px] rounded-xl border p-1.5 ${
-                  day.isCurrentMonth
-                    ? day.matches.length > 0
-                      ? "border-[#004b82]/20 bg-[#004b82]/5"
-                      : "border-neutral-200 bg-white"
-                    : "border-transparent bg-transparent"
-                }`}
-              >
-                {day.isCurrentMonth && (
-                  <>
-                    <div className="mb-1 flex items-center justify-between">
-                      <span
-                        className={`text-xs font-black ${
-                          day.matches.length > 0
-                            ? "text-[#004b82]"
-                            : "text-neutral-400"
-                        }`}
-                      >
-                        {day.dayNumber}
-                      </span>
-
-                      {day.matches.length > 0 && (
-                        <span className="rounded-full bg-[#004b82] px-1.5 py-0.5 text-[9px] font-black text-white">
-                          {day.matches.length}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="space-y-1">
-                      {day.matches.slice(0, 2).map((match) => (
-                        <div
-                          key={match.match_number}
-                          className="rounded-lg bg-white px-1.5 py-1 text-[9px] leading-tight shadow-sm"
-                          title={`${match.home_team} vs ${match.away_team}`}
-                        >
-                          <div className="mb-0.5 flex items-center justify-between gap-1">
-                            <span className="font-black text-[#004b82]">
-                              {match[timeKey]}
-                            </span>
-                            <span className="font-bold text-neutral-300">
-                              M{match.match_number}
-                            </span>
-                          </div>
-
-                          <div className="truncate font-bold text-neutral-800">
-                            {flagMap[match.home_team] || "🏳️"}{" "}
-                            {shortName(match.home_team)}
-                          </div>
-
-                          <div className="truncate font-bold text-neutral-800">
-                            {flagMap[match.away_team] || "🏳️"}{" "}
-                            {shortName(match.away_team)}
-                          </div>
-                        </div>
-                      ))}
-
-                      {day.matches.length > 2 && (
-                        <div className="rounded-lg bg-neutral-900 px-1.5 py-1 text-center text-[9px] font-black text-white">
-                          +{day.matches.length - 2} more
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
+            <button
+              onClick={() => setCalendarMode("cities")}
+              className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
+                calendarMode === "cities"
+                  ? "bg-[#004b82] text-white shadow-sm"
+                  : "text-neutral-600"
+              }`}
+            >
+              <Building2 size={16} />
+              Cities
+            </button>
           </div>
         </div>
-      ))}
-    </section>
+
+        {months.map((month) => (
+          <div
+            key={month.key}
+            className="overflow-hidden rounded-3xl bg-white shadow-sm"
+          >
+            <div className="border-b border-neutral-200 px-5 py-4">
+              <h3 className="text-2xl font-black tracking-tight text-[#07162f]">
+                {month.label}
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-7 bg-neutral-50 text-center text-xs font-black text-neutral-600">
+              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+                <div key={day} className="border-r border-neutral-200 py-2">
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-7">
+              {month.days.map((day) => (
+                <div
+                  key={day.key}
+                  className={`min-h-[122px] border-r border-t border-neutral-200 p-2 ${
+                    day.isCurrentMonth ? "bg-white" : "bg-neutral-50"
+                  }`}
+                >
+                  {day.isCurrentMonth && (
+                    <>
+                      <div className="mb-2 text-sm font-black text-neutral-900">
+                        {day.dayNumber}
+                      </div>
+
+                      <div className="space-y-1.5">
+                        {day.matches.map((match) => (
+                          <button
+                            key={match.match_number}
+                            onClick={() => setSelectedMatch(match)}
+                            className="w-full rounded-lg border border-[#004b82]/15 bg-[#004b82]/5 px-2 py-1.5 text-left transition hover:border-[#004b82]/40 hover:bg-[#004b82]/10"
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-xs font-black text-[#004b82]">
+                                {match[timeKey]}
+                              </span>
+
+                              <span className="text-[10px] font-black text-neutral-300">
+                                M{match.match_number}
+                              </span>
+                            </div>
+
+                            <div className="mt-0.5 truncate text-[11px] font-bold text-neutral-900">
+                              {calendarMode === "teams"
+                                ? `${match.home_team} vs ${match.away_team}`
+                                : match.city}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </section>
+
+      {selectedMatch && (
+        <MatchModal
+          match={selectedMatch}
+          timeMode={timeMode}
+          onClose={() => setSelectedMatch(null)}
+        />
+      )}
+    </>
+  );
+}
+
+function MatchModal({ match, timeMode, onClose }) {
+  const localDateLabel = formatDate(match.date);
+  const uaeDateLabel = formatDate(match.date_uae || match.date);
+
+  const isDifferentUaeDate = match.date_uae && match.date_uae !== match.date;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-4">
+      <div className="w-full max-w-xl rounded-3xl bg-white p-5 shadow-2xl">
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold text-neutral-500">
+              Match #{match.match_number}
+              {match.group ? ` · ${match.group}` : ""}
+            </p>
+
+            <h2 className="mt-1 text-2xl font-black tracking-tight text-[#07162f]">
+              {match.home_team} vs {match.away_team}
+            </h2>
+
+            <p className="mt-1 text-sm font-medium text-neutral-500">
+              {match.phase}
+              {match.group ? ` · ${match.group}` : ""}
+            </p>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="rounded-full p-2 text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-900"
+          >
+            <X size={22} />
+          </button>
+        </div>
+
+        <div className="rounded-2xl bg-neutral-100 p-4 text-sm">
+          <p>
+            <strong>Kick-off (Local):</strong> {localDateLabel},{" "}
+            {match.time_local} ({match.city})
+          </p>
+
+          <p className="mt-2">
+            <strong>Kick-off (UAE):</strong> {uaeDateLabel}, {match.time_uae}{" "}
+            (Asia/Dubai)
+          </p>
+
+          {isDifferentUaeDate && (
+            <p className="mt-2 text-xs font-bold text-[#004b82]">
+              This match falls on a different calendar date in UAE time.
+            </p>
+          )}
+        </div>
+
+        <div className="mt-5 grid gap-3 text-sm">
+          <DetailRow icon={<MapPin size={17} />} label="City" value={match.city} />
+          <DetailRow
+            icon={<Building2 size={17} />}
+            label="Venue"
+            value={match.venue}
+          />
+          <DetailRow icon={<Trophy size={17} />} label="Stage" value={match.phase} />
+          {match.group && (
+            <DetailRow icon={<Users size={17} />} label="Group" value={match.group} />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DetailRow({ icon, label, value }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="text-[#004b82]">{icon}</span>
+      <strong className="min-w-[70px] text-neutral-900">{label}:</strong>
+      <span className="text-neutral-600">{value}</span>
+    </div>
   );
 }
 
@@ -128,7 +229,6 @@ function buildTournamentMonth(year, monthIndex, fixtures, dateKey, timeKey) {
     grouped[date].sort((a, b) => {
       const aTime = a[timeKey] || "";
       const bTime = b[timeKey] || "";
-
       return aTime.localeCompare(bTime);
     });
   });
@@ -137,7 +237,6 @@ function buildTournamentMonth(year, monthIndex, fixtures, dateKey, timeKey) {
   const lastOfMonth = new Date(year, monthIndex + 1, 0);
 
   const startOffset = (firstOfMonth.getDay() + 6) % 7;
-
   const calendarStart = new Date(firstOfMonth);
   calendarStart.setDate(firstOfMonth.getDate() - startOffset);
 
@@ -168,26 +267,21 @@ function buildTournamentMonth(year, monthIndex, fixtures, dateKey, timeKey) {
   };
 }
 
+function formatDate(dateString) {
+  const date = new Date(`${dateString}T12:00:00`);
+
+  return new Intl.DateTimeFormat("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+}
+
 function toDateKey(date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
-}
-
-function shortName(team) {
-  const names = {
-    "South Africa": "S. Africa",
-    "Korea Republic": "Korea",
-    "Bosnia and Herzegovina": "Bosnia",
-    "Côte d'Ivoire": "C. d'Ivoire",
-    "Saudi Arabia": "Saudi",
-    "Cabo Verde": "C. Verde",
-    "New Zealand": "N. Zealand",
-    "DR Congo": "DR Congo",
-    "San Francisco Bay Area": "SF Bay",
-  };
-
-  return names[team] || team;
 }
