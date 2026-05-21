@@ -2,7 +2,7 @@ import { Building2, MapPin, Trophy, Users, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 export default function CalendarView({ fixtures, timeMode, flagMap }) {
-  const [calendarMode, setCalendarMode] = useState("teams");
+  const [calendarMode, setCalendarMode] = useState("cities");
   const [selectedMatch, setSelectedMatch] = useState(null);
 
   const dateKey = timeMode === "uae" ? "date_uae" : "date";
