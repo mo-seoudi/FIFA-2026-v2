@@ -25,14 +25,14 @@
   "Runner-up Group K": { "code": "2K", "team": null, "flag": null },
   "Runner-up Group L": { "code": "2L", "team": null, "flag": null },
 
-  "3rd Group A/B/C": { "code": "3A/B/C", "team": null, "flag": null },
+  "3rd Group A/B/C/D/F": { "code": "3A/B/C/D/F", "team": null, "flag": null },
+  "3rd Group C/D/F/G/H": { "code": "3C/D/F/G/H", "team": null, "flag": null },
   "3rd Group C/E/F/H/I": { "code": "3C/E/F/H/I", "team": null, "flag": null },
-  "3rd Group C/D/F/G/I": { "code": "3C/D/F/G/I", "team": null, "flag": null },
+  "3rd Group E/H/I/J/K": { "code": "3E/H/I/J/K", "team": null, "flag": null },
   "3rd Group B/E/F/I/J": { "code": "3B/E/F/I/J", "team": null, "flag": null },
-  "3rd Group A/C/G/H/I": { "code": "3A/C/G/H/I", "team": null, "flag": null },
-  "3rd Group A/D/E/F/I": { "code": "3A/D/E/F/I", "team": null, "flag": null },
-  "3rd Group A/E/F/H/I": { "code": "3A/E/F/H/I", "team": null, "flag": null },
-  "3rd Group C/E/F/I/J": { "code": "3C/E/F/I/J", "team": null, "flag": null },
+  "3rd Group A/E/H/I/J": { "code": "3A/E/H/I/J", "team": null, "flag": null },
+  "3rd Group E/F/G/I/J": { "code": "3E/F/G/I/J", "team": null, "flag": null },
+  "3rd Group D/E/I/J/L": { "code": "3D/E/I/J/L", "team": null, "flag": null },
 
   "Winner Match 73": { "code": "W73", "team": null, "flag": null },
   "Winner Match 74": { "code": "W74", "team": null, "flag": null },
@@ -56,7 +56,15 @@
   "Winner Match 92": { "code": "W92", "team": null, "flag": null },
   "Winner Match 93": { "code": "W93", "team": null, "flag": null },
   "Winner Match 94": { "code": "W94", "team": null, "flag": null },
+  "Winner Match 95": { "code": "W95", "team": null, "flag": null },
+  "Winner Match 96": { "code": "W96", "team": null, "flag": null },
+  "Winner Match 97": { "code": "W97", "team": null, "flag": null },
+  "Winner Match 98": { "code": "W98", "team": null, "flag": null },
+  "Winner Match 99": { "code": "W99", "team": null, "flag": null },
+  "Winner Match 100": { "code": "W100", "team": null, "flag": null },
+  "Winner Match 101": { "code": "W101", "team": null, "flag": null },
+  "Winner Match 102": { "code": "W102", "team": null, "flag": null },
 
-  "Loser Match 93": { "code": "L93", "team": null, "flag": null },
-  "Loser Match 94": { "code": "L94", "team": null, "flag": null }
+  "Loser Match 101": { "code": "L101", "team": null, "flag": null },
+  "Loser Match 102": { "code": "L102", "team": null, "flag": null }
 }
