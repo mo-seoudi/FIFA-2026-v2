@@ -40,6 +40,22 @@ const flagMap = {
   Portugal: "🇵🇹",
   England: "🏴",
   Croatia: "🇭🇷",
+  "Côte d'Ivoire": "🇨🇮",
+  Ecuador: "🇪🇨",
+  "Saudi Arabia": "🇸🇦",
+  "Cabo Verde": "🇨🇻",
+  Iran: "🇮🇷",
+  "New Zealand": "🇳🇿",
+  Iraq: "🇮🇶",
+  Norway: "🇳🇴",
+  Algeria: "🇩🇿",
+  Austria: "🇦🇹",
+  Jordan: "🇯🇴",
+  Ghana: "🇬🇭",
+  Panama: "🇵🇦",
+  "DR Congo": "🇨🇩",
+  Uzbekistan: "🇺🇿",
+  Colombia: "🇨🇴",
 };
 
 export default function Fifa() {
@@ -47,6 +63,8 @@ export default function Fifa() {
   const [groupFilter, setGroupFilter] = useState("ALL");
   const [timeMode, setTimeMode] = useState("local");
   const [viewMode, setViewMode] = useState("list");
+
+  const dateKey = timeMode === "uae" ? "date_uae" : "date";
 
   const groups = useMemo(() => {
     return [
@@ -73,15 +91,28 @@ export default function Fifa() {
           .toLowerCase()
           .includes(q);
 
-      const matchesGroup = groupFilter === "ALL" || match.group === groupFilter;
+      const matchesGroup =
+        groupFilter === "ALL" || match.group === groupFilter;
 
       return matchesQuery && matchesGroup;
     });
   }, [query, groupFilter]);
 
+  const sortedFixtures = useMemo(() => {
+    return [...filteredFixtures].sort((a, b) => {
+      const aDate = timeMode === "uae" ? a.date_uae : a.date;
+      const bDate = timeMode === "uae" ? b.date_uae : b.date;
+
+      const aTime = timeMode === "uae" ? a.time_uae : a.time_local;
+      const bTime = timeMode === "uae" ? b.time_uae : b.time_local;
+
+      return `${aDate} ${aTime}`.localeCompare(`${bDate} ${bTime}`);
+    });
+  }, [filteredFixtures, timeMode]);
+
   const groupedFixtures = useMemo(() => {
-    return groupFixturesByDate(filteredFixtures);
-  }, [filteredFixtures]);
+    return groupFixturesByDate(sortedFixtures, dateKey);
+  }, [sortedFixtures, dateKey]);
 
   return (
     <div className="min-h-screen bg-neutral-100 text-neutral-950">
@@ -114,7 +145,7 @@ export default function Fifa() {
           </section>
         ) : (
           <CalendarView
-            fixtures={filteredFixtures}
+            fixtures={sortedFixtures}
             timeMode={timeMode}
             flagMap={flagMap}
           />
@@ -124,10 +155,14 @@ export default function Fifa() {
   );
 }
 
-function groupFixturesByDate(items) {
+function groupFixturesByDate(items, dateKey) {
   return items.reduce((acc, match) => {
-    if (!acc[match.date]) acc[match.date] = [];
-    acc[match.date].push(match);
+    const displayDate = match[dateKey] || match.date;
+
+    if (!acc[displayDate]) acc[displayDate] = [];
+
+    acc[displayDate].push(match);
+
     return acc;
   }, {});
 }
