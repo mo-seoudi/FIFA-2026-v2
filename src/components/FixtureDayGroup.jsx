@@ -2,6 +2,7 @@ import { CalendarDays, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import fixtures from "../data/schedule.json";
+import teamsData from "../data/teams.json";
 import FixtureCard from "./FixtureCard";
 
 const bracketPhases = [
@@ -9,16 +10,11 @@ const bracketPhases = [
   "Round of 16",
   "Quarter-finals",
   "Semi-finals",
-  "Third Place Match",
+  "Bronze Final",
   "Final",
 ];
 
-export default function FixtureDayGroup({
-  date,
-  matches,
-  timeMode,
-  flagMap,
-}) {
+export default function FixtureDayGroup({ date, matches, timeMode, flagMap }) {
   const [modalType, setModalType] = useState(null);
 
   const isKnockoutDay = matches.some((match) => match.phase !== "Group Stage");
@@ -28,7 +24,6 @@ export default function FixtureDayGroup({
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <CalendarDays className="text-[#004b82]" size={20} />
-
           <h3 className="text-xl font-bold">{formatDayLabel(date)}</h3>
         </div>
 
@@ -85,20 +80,37 @@ function GroupsModal({ onClose }) {
     <ModalShell title="FIFA World Cup 2026™" subtitle="Groups" onClose={onClose}>
       <div className="grid gap-4 md:grid-cols-2">
         {groups.map(({ group, teams }) => (
-          <div key={group} className="rounded-2xl border border-neutral-200 bg-white">
+          <div
+            key={group}
+            className="rounded-2xl border border-neutral-200 bg-white"
+          >
             <div className="border-b border-neutral-200 px-4 py-3">
               <h3 className="text-lg font-black text-[#07162f]">{group}</h3>
             </div>
 
             <div className="divide-y divide-neutral-100">
-              {teams.map((team, index) => (
-                <div key={team} className="flex items-center gap-3 px-4 py-3">
-                  <span className="w-5 text-sm font-bold text-neutral-400">
-                    {index + 1}
-                  </span>
-                  <span className="font-bold text-neutral-900">{team}</span>
-                </div>
-              ))}
+              {teams.map((team, index) => {
+                const flag = teamsData[team]?.flag;
+
+                return (
+                  <div key={team} className="flex items-center gap-3 px-4 py-3">
+                    <span className="w-5 text-sm font-bold text-neutral-400">
+                      {index + 1}
+                    </span>
+
+                    {flag ? (
+                      <span
+                        className={`fi fi-${flag} h-4 w-6 rounded-sm shadow-sm`}
+                        title={team}
+                      />
+                    ) : (
+                      <span className="text-lg leading-none">🏳️</span>
+                    )}
+
+                    <span className="font-bold text-neutral-900">{team}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         ))}
@@ -113,11 +125,7 @@ function BracketsModal({ onClose }) {
   const phaseMatches = fixtures.filter((match) => match.phase === activePhase);
 
   return (
-    <ModalShell
-      title="FIFA World Cup 2026™"
-      subtitle="Brackets"
-      onClose={onClose}
-    >
+    <ModalShell title="FIFA World Cup 2026™" subtitle="Brackets" onClose={onClose}>
       <div className="mb-5 flex gap-2 overflow-x-auto pb-2">
         {bracketPhases.map((phase) => (
           <button
