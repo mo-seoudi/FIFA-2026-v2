@@ -1,62 +1,20 @@
 import { useMemo, useState } from "react";
 
 import fixtures from "../data/schedule.json";
+import teams from "../data/teams.json";
 
 import Header from "../components/Header.jsx";
 import ScheduleFilters from "../components/ScheduleFilters.jsx";
 import FixtureDayGroup from "../components/FixtureDayGroup.jsx";
 import CalendarView from "../components/CalendarView.jsx";
 
-const flagMap = {
-  Mexico: "mx",
-  "South Africa": "za",
-  "Korea Republic": "kr",
-  Czechia: "cz",
-  Canada: "ca",
-  "Bosnia and Herzegovina": "ba",
-  USA: "us",
-  Paraguay: "py",
-  Qatar: "qa",
-  Switzerland: "ch",
-  Brazil: "br",
-  Morocco: "ma",
-  Haiti: "ht",
-  Scotland: "gb-sct",
-  Australia: "au",
-  Türkiye: "tr",
-  Germany: "de",
-  Curaçao: "cw",
-  Netherlands: "nl",
-  Japan: "jp",
-  Sweden: "se",
-  Tunisia: "tn",
-  Spain: "es",
-  Uruguay: "uy",
-  Belgium: "be",
-  Egypt: "eg",
-  France: "fr",
-  Senegal: "sn",
-  Argentina: "ar",
-  Portugal: "pt",
-  England: "gb-eng",
-  Croatia: "hr",
-  "Côte d'Ivoire": "ci",
-  Ecuador: "ec",
-  "Saudi Arabia": "sa",
-  "Cabo Verde": "cv",
-  Iran: "ir",
-  "New Zealand": "nz",
-  Iraq: "iq",
-  Norway: "no",
-  Algeria: "dz",
-  Austria: "at",
-  Jordan: "jo",
-  Ghana: "gh",
-  Panama: "pa",
-  "DR Congo": "cd",
-  Uzbekistan: "uz",
-  Colombia: "co",
-};
+const flagMap = Object.fromEntries(
+  Object.entries(teams).map(([teamName, data]) => [teamName, data.flag])
+);
+
+const fifaCodeMap = Object.fromEntries(
+  Object.entries(teams).map(([teamName, data]) => [teamName, data.fifaCode])
+);
 
 export default function Fifa() {
   const [query, setQuery] = useState("");
@@ -140,6 +98,7 @@ export default function Fifa() {
                 matches={matches}
                 timeMode={timeMode}
                 flagMap={flagMap}
+                fifaCodeMap={fifaCodeMap}
               />
             ))}
           </section>
@@ -148,6 +107,7 @@ export default function Fifa() {
             fixtures={sortedFixtures}
             timeMode={timeMode}
             flagMap={flagMap}
+            fifaCodeMap={fifaCodeMap}
           />
         )}
       </main>
