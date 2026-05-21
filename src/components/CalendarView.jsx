@@ -1,6 +1,69 @@
 import { Building2, MapPin, Trophy, Users, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
+const knockoutCodeMap = {
+  "Winner Group A": "1A",
+  "Winner Group B": "1B",
+  "Winner Group C": "1C",
+  "Winner Group D": "1D",
+  "Winner Group E": "1E",
+  "Winner Group F": "1F",
+  "Winner Group G": "1G",
+  "Winner Group H": "1H",
+  "Winner Group I": "1I",
+  "Winner Group J": "1J",
+  "Winner Group K": "1K",
+  "Winner Group L": "1L",
+
+  "Runner-up Group A": "2A",
+  "Runner-up Group B": "2B",
+  "Runner-up Group C": "2C",
+  "Runner-up Group D": "2D",
+  "Runner-up Group E": "2E",
+  "Runner-up Group F": "2F",
+  "Runner-up Group G": "2G",
+  "Runner-up Group H": "2H",
+  "Runner-up Group I": "2I",
+  "Runner-up Group J": "2J",
+  "Runner-up Group K": "2K",
+  "Runner-up Group L": "2L",
+
+  "3rd Group A/B/C": "3A/B/C",
+  "3rd Group C/E/F/H/I": "3C/E/F/H/I",
+  "3rd Group C/D/F/G/I": "3C/D/F/G/I",
+  "3rd Group B/E/F/I/J": "3B/E/F/I/J",
+  "3rd Group A/C/G/H/I": "3A/C/G/H/I",
+  "3rd Group A/D/E/F/I": "3A/D/E/F/I",
+  "3rd Group A/E/F/H/I": "3A/E/F/H/I",
+  "3rd Group C/E/F/I/J": "3C/E/F/I/J",
+
+  "Winner Match 73": "W73",
+  "Winner Match 74": "W74",
+  "Winner Match 75": "W75",
+  "Winner Match 76": "W76",
+  "Winner Match 77": "W77",
+  "Winner Match 78": "W78",
+  "Winner Match 79": "W79",
+  "Winner Match 80": "W80",
+  "Winner Match 81": "W81",
+  "Winner Match 82": "W82",
+  "Winner Match 83": "W83",
+  "Winner Match 84": "W84",
+  "Winner Match 85": "W85",
+  "Winner Match 86": "W86",
+  "Winner Match 87": "W87",
+  "Winner Match 88": "W88",
+  "Winner Match 89": "W89",
+  "Winner Match 90": "W90",
+  "Winner Match 91": "W91",
+  "Winner Match 92": "W92",
+  "Winner Match 93": "W93",
+  "Winner Match 94": "W94",
+
+  "Loser Match 93": "L93",
+  "Loser Match 94": "L94",
+};
+
 export default function CalendarView({ fixtures, timeMode, flagMap }) {
   const [calendarMode, setCalendarMode] = useState("cities");
   const [selectedMatch, setSelectedMatch] = useState(null);
@@ -30,18 +93,6 @@ export default function CalendarView({ fixtures, timeMode, flagMap }) {
 
           <div className="flex gap-2 rounded-2xl bg-neutral-100 p-1">
             <button
-              onClick={() => setCalendarMode("teams")}
-              className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
-                calendarMode === "teams"
-                  ? "bg-[#004b82] text-white shadow-sm"
-                  : "text-neutral-600"
-              }`}
-            >
-              <Users size={16} />
-              Teams
-            </button>
-
-            <button
               onClick={() => setCalendarMode("cities")}
               className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
                 calendarMode === "cities"
@@ -51,6 +102,18 @@ export default function CalendarView({ fixtures, timeMode, flagMap }) {
             >
               <Building2 size={16} />
               Cities
+            </button>
+
+            <button
+              onClick={() => setCalendarMode("teams")}
+              className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
+                calendarMode === "teams"
+                  ? "bg-[#004b82] text-white shadow-sm"
+                  : "text-neutral-600"
+              }`}
+            >
+              <Users size={16} />
+              Teams
             </button>
           </div>
         </div>
@@ -151,8 +214,28 @@ export default function CalendarView({ fixtures, timeMode, flagMap }) {
 }
 
 function TeamFlag({ code, name }) {
+  const knockoutCode = knockoutCodeMap[name];
+
+  if (!code && knockoutCode) {
+    return (
+      <span
+        title={name}
+        className="flex h-4 min-w-7 items-center justify-center rounded-sm bg-neutral-200 px-1 text-[8px] font-black leading-none text-neutral-700 shadow-sm"
+      >
+        {knockoutCode}
+      </span>
+    );
+  }
+
   if (!code) {
-    return <span className="text-lg leading-none">🏳️</span>;
+    return (
+      <span
+        title={name}
+        className="flex h-4 min-w-7 items-center justify-center rounded-sm bg-neutral-200 px-1 text-[8px] font-black leading-none text-neutral-700 shadow-sm"
+      >
+        TBD
+      </span>
+    );
   }
 
   return (
