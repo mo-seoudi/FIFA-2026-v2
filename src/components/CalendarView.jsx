@@ -1,5 +1,5 @@
 import { Building2, MapPin, Trophy, Users, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function CalendarView({ fixtures, timeMode }) {
   const [calendarMode, setCalendarMode] = useState("teams");
@@ -125,7 +125,6 @@ export default function CalendarView({ fixtures, timeMode }) {
       {selectedMatch && (
         <MatchModal
           match={selectedMatch}
-          timeMode={timeMode}
           onClose={() => setSelectedMatch(null)}
         />
       )}
@@ -133,20 +132,38 @@ export default function CalendarView({ fixtures, timeMode }) {
   );
 }
 
-function MatchModal({ match, timeMode, onClose }) {
+function MatchModal({ match, onClose }) {
+  useEffect(() => {
+    function handleEscape(event) {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    }
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [onClose]);
+
   const localDateLabel = formatDate(match.date);
   const uaeDateLabel = formatDate(match.date_uae || match.date);
-
   const isDifferentUaeDate = match.date_uae && match.date_uae !== match.date;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-4">
-      <div className="w-full max-w-xl rounded-3xl bg-white p-5 shadow-2xl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-4"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-xl rounded-3xl bg-white p-5 shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
+      >
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
             <p className="text-sm font-semibold text-neutral-500">
               Match #{match.match_number}
-              {match.group ? ` · ${match.group}` : ""}
             </p>
 
             <h2 className="mt-1 text-2xl font-black tracking-tight text-[#07162f]">
@@ -161,6 +178,7 @@ function MatchModal({ match, timeMode, onClose }) {
 
           <button
             onClick={onClose}
+            aria-label="Close match details"
             className="rounded-full p-2 text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-900"
           >
             <X size={22} />
@@ -187,12 +205,15 @@ function MatchModal({ match, timeMode, onClose }) {
 
         <div className="mt-5 grid gap-3 text-sm">
           <DetailRow icon={<MapPin size={17} />} label="City" value={match.city} />
+
           <DetailRow
             icon={<Building2 size={17} />}
             label="Venue"
             value={match.venue}
           />
+
           <DetailRow icon={<Trophy size={17} />} label="Stage" value={match.phase} />
+
           {match.group && (
             <DetailRow icon={<Users size={17} />} label="Group" value={match.group} />
           )}
