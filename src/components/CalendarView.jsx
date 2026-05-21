@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import teamSlots from "../data/teamSlots.json";
 
-export default function CalendarView({ fixtures, timeMode, flagMap }) {
+export default function CalendarView({ fixtures, timeMode, flagMap, fifaCodeMap }) {
   const [calendarMode, setCalendarMode] = useState("cities");
   const [selectedMatch, setSelectedMatch] = useState(null);
 
@@ -112,6 +112,7 @@ export default function CalendarView({ fixtures, timeMode, flagMap }) {
                                 <div className="flex items-center justify-center gap-1.5">
                                   <TeamFlag
                                     code={flagMap?.[match.home_team]}
+                                    fifaCode={fifaCodeMap?.[match.home_team]}
                                     name={match.home_team}
                                   />
 
@@ -121,6 +122,7 @@ export default function CalendarView({ fixtures, timeMode, flagMap }) {
 
                                   <TeamFlag
                                     code={flagMap?.[match.away_team]}
+                                    fifaCode={fifaCodeMap?.[match.away_team]}
                                     name={match.away_team}
                                   />
                                 </div>
@@ -152,7 +154,7 @@ export default function CalendarView({ fixtures, timeMode, flagMap }) {
   );
 }
 
-function TeamFlag({ code, name }) {
+function TeamFlag({ code, name, fifaCode }) {
   const slot = teamSlots[name];
 
   if (slot?.flag) {
@@ -190,7 +192,7 @@ function TeamFlag({ code, name }) {
   return (
     <span
       aria-label={`${name} flag`}
-      title={`${name} flag`}
+      title={fifaCode ? `${name} (${fifaCode})` : `${name} flag`}
       className={`fi fi-${code} h-4 w-6 rounded-sm shadow-sm`}
     />
   );
