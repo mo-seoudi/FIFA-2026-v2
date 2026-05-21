@@ -2,10 +2,10 @@ import { useMemo, useState } from "react";
 
 import fixtures from "../data/schedule.json";
 
-import Header from "../components/Header";
-import ScheduleFilters from "../components/ScheduleFilters";
-import FixtureDayGroup from "../components/FixtureDayGroup";
-import CalendarView from "../components/CalendarView";
+import Header from "../components/Header.jsx";
+import ScheduleFilters from "../components/ScheduleFilters.jsx";
+import FixtureDayGroup from "../components/FixtureDayGroup.jsx";
+import CalendarView from "../components/CalendarView.jsx";
 
 const flagMap = {
   Mexico: "🇲🇽",
