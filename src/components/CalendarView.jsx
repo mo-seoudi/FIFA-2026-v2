@@ -2,8 +2,14 @@ import { Building2, MapPin, Trophy, Users, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import teamSlots from "../data/teamSlots.json";
+import stadiums from "../data/stadiums.json";
 
-export default function CalendarView({ fixtures, timeMode, flagMap, fifaCodeMap }) {
+export default function CalendarView({
+  fixtures,
+  timeMode,
+  flagMap,
+  fifaCodeMap,
+}) {
   const [calendarMode, setCalendarMode] = useState("cities");
   const [teamDisplayMode, setTeamDisplayMode] = useState("flags");
   const [selectedMatch, setSelectedMatch] = useState(null);
@@ -26,6 +32,7 @@ export default function CalendarView({ fixtures, timeMode, flagMap, fifaCodeMap 
             <h2 className="text-xl font-black tracking-tight">
               Tournament Calendar
             </h2>
+
             <p className="text-sm text-neutral-500">
               June and July 2026 World Cup fixtures
             </p>
@@ -259,7 +266,11 @@ function MatchModal({ match, onClose }) {
 
   const localDateLabel = formatDate(match.date);
   const uaeDateLabel = formatDate(match.date_uae || match.date);
-  const isDifferentUaeDate = match.date_uae && match.date_uae !== match.date;
+
+  const isDifferentUaeDate =
+    match.date_uae && match.date_uae !== match.date;
+
+  const realVenue = stadiums[match.city] || match.venue;
 
   return (
     <div
@@ -302,8 +313,8 @@ function MatchModal({ match, onClose }) {
           </p>
 
           <p className="mt-2">
-            <strong>Kick-off (UAE):</strong> {uaeDateLabel}, {match.time_uae}{" "}
-            (Dubai)
+            <strong>Kick-off (UAE):</strong> {uaeDateLabel},{" "}
+            {match.time_uae} (Dubai)
           </p>
 
           {isDifferentUaeDate && (
@@ -314,18 +325,30 @@ function MatchModal({ match, onClose }) {
         </div>
 
         <div className="mt-5 grid gap-3 text-sm">
-          <DetailRow icon={<MapPin size={17} />} label="City" value={match.city} />
+          <DetailRow
+            icon={<MapPin size={17} />}
+            label="City"
+            value={match.city}
+          />
 
           <DetailRow
             icon={<Building2 size={17} />}
             label="Venue"
-            value={match.venue}
+            value={realVenue}
           />
 
-          <DetailRow icon={<Trophy size={17} />} label="Stage" value={match.phase} />
+          <DetailRow
+            icon={<Trophy size={17} />}
+            label="Stage"
+            value={match.phase}
+          />
 
           {match.group && (
-            <DetailRow icon={<Users size={17} />} label="Group" value={match.group} />
+            <DetailRow
+              icon={<Users size={17} />}
+              label="Group"
+              value={match.group}
+            />
           )}
         </div>
       </div>
@@ -337,7 +360,11 @@ function DetailRow({ icon, label, value }) {
   return (
     <div className="flex items-center gap-3">
       <span className="text-[#004b82]">{icon}</span>
-      <strong className="min-w-[70px] text-neutral-900">{label}:</strong>
+
+      <strong className="min-w-[70px] text-neutral-900">
+        {label}:
+      </strong>
+
       <span className="text-neutral-600">{value}</span>
     </div>
   );
@@ -360,6 +387,7 @@ function buildTournamentMonth(year, monthIndex, fixtures, dateKey, timeKey) {
     grouped[date].sort((a, b) => {
       const aTime = a[timeKey] || "";
       const bTime = b[timeKey] || "";
+
       return aTime.localeCompare(bTime);
     });
   });
@@ -368,14 +396,18 @@ function buildTournamentMonth(year, monthIndex, fixtures, dateKey, timeKey) {
   const lastOfMonth = new Date(year, monthIndex + 1, 0);
 
   const startOffset = (firstOfMonth.getDay() + 6) % 7;
+
   const calendarStart = new Date(firstOfMonth);
+
   calendarStart.setDate(firstOfMonth.getDate() - startOffset);
 
   const days = [];
+
   const current = new Date(calendarStart);
 
   while (current <= lastOfMonth || days.length % 7 !== 0) {
     const key = toDateKey(current);
+
     const isCurrentMonth = current.getMonth() === monthIndex;
 
     days.push({
@@ -390,10 +422,12 @@ function buildTournamentMonth(year, monthIndex, fixtures, dateKey, timeKey) {
 
   return {
     key: `${year}-${String(monthIndex + 1).padStart(2, "0")}`,
+
     label: new Intl.DateTimeFormat("en-GB", {
       month: "long",
       year: "numeric",
     }).format(firstOfMonth),
+
     days,
   };
 }
@@ -411,7 +445,9 @@ function formatDate(dateString) {
 
 function toDateKey(date) {
   const year = date.getFullYear();
+
   const month = String(date.getMonth() + 1).padStart(2, "0");
+
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
