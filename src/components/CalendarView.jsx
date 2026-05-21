@@ -5,6 +5,7 @@ import teamSlots from "../data/teamSlots.json";
 
 export default function CalendarView({ fixtures, timeMode, flagMap, fifaCodeMap }) {
   const [calendarMode, setCalendarMode] = useState("cities");
+  const [teamDisplayMode, setTeamDisplayMode] = useState("flags");
   const [selectedMatch, setSelectedMatch] = useState(null);
 
   const dateKey = timeMode === "uae" ? "date_uae" : "date";
@@ -30,30 +31,58 @@ export default function CalendarView({ fixtures, timeMode, flagMap, fifaCodeMap 
             </p>
           </div>
 
-          <div className="flex gap-2 rounded-2xl bg-neutral-100 p-1">
-            <button
-              onClick={() => setCalendarMode("cities")}
-              className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
-                calendarMode === "cities"
-                  ? "bg-[#004b82] text-white shadow-sm"
-                  : "text-neutral-600"
-              }`}
-            >
-              <Building2 size={16} />
-              Cities
-            </button>
+          <div className="flex flex-wrap gap-2">
+            <div className="flex gap-2 rounded-2xl bg-neutral-100 p-1">
+              <button
+                onClick={() => setCalendarMode("cities")}
+                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
+                  calendarMode === "cities"
+                    ? "bg-[#004b82] text-white shadow-sm"
+                    : "text-neutral-600"
+                }`}
+              >
+                <Building2 size={16} />
+                Cities
+              </button>
 
-            <button
-              onClick={() => setCalendarMode("teams")}
-              className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
-                calendarMode === "teams"
-                  ? "bg-[#004b82] text-white shadow-sm"
-                  : "text-neutral-600"
-              }`}
-            >
-              <Users size={16} />
-              Teams
-            </button>
+              <button
+                onClick={() => setCalendarMode("teams")}
+                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
+                  calendarMode === "teams"
+                    ? "bg-[#004b82] text-white shadow-sm"
+                    : "text-neutral-600"
+                }`}
+              >
+                <Users size={16} />
+                Teams
+              </button>
+            </div>
+
+            {calendarMode === "teams" && (
+              <div className="flex gap-2 rounded-2xl bg-neutral-100 p-1">
+                <button
+                  onClick={() => setTeamDisplayMode("flags")}
+                  className={`rounded-xl px-4 py-2 text-sm font-bold transition ${
+                    teamDisplayMode === "flags"
+                      ? "bg-[#004b82] text-white shadow-sm"
+                      : "text-neutral-600"
+                  }`}
+                >
+                  Flags
+                </button>
+
+                <button
+                  onClick={() => setTeamDisplayMode("codes")}
+                  className={`rounded-xl px-4 py-2 text-sm font-bold transition ${
+                    teamDisplayMode === "codes"
+                      ? "bg-[#004b82] text-white shadow-sm"
+                      : "text-neutral-600"
+                  }`}
+                >
+                  Codes
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -110,20 +139,22 @@ export default function CalendarView({ fixtures, timeMode, flagMap, fifaCodeMap 
                             <div className="mt-1">
                               {calendarMode === "teams" ? (
                                 <div className="flex items-center justify-center gap-1.5">
-                                  <TeamFlag
+                                  <TeamBadge
                                     code={flagMap?.[match.home_team]}
                                     fifaCode={fifaCodeMap?.[match.home_team]}
                                     name={match.home_team}
+                                    displayMode={teamDisplayMode}
                                   />
 
                                   <span className="text-[10px] font-black uppercase text-neutral-400">
                                     vs
                                   </span>
 
-                                  <TeamFlag
+                                  <TeamBadge
                                     code={flagMap?.[match.away_team]}
                                     fifaCode={fifaCodeMap?.[match.away_team]}
                                     name={match.away_team}
+                                    displayMode={teamDisplayMode}
                                   />
                                 </div>
                               ) : (
@@ -154,8 +185,21 @@ export default function CalendarView({ fixtures, timeMode, flagMap, fifaCodeMap 
   );
 }
 
-function TeamFlag({ code, name, fifaCode }) {
+function TeamBadge({ code, name, fifaCode, displayMode }) {
   const slot = teamSlots[name];
+
+  const label = slot?.fifaCode || fifaCode || slot?.code || "TBD";
+
+  if (displayMode === "codes") {
+    return (
+      <span
+        title={slot?.team || name}
+        className="flex h-4 min-w-8 items-center justify-center rounded-sm bg-neutral-200 px-1 text-[8px] font-black leading-none text-neutral-700 shadow-sm"
+      >
+        {label}
+      </span>
+    );
+  }
 
   if (slot?.flag) {
     return (
