@@ -1,9 +1,10 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 @import "@fullcalendar/daygrid/index.css";
 @import "@fullcalendar/timegrid/index.css";
 @import "@fullcalendar/list/index.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 * {
   box-sizing: border-box;
