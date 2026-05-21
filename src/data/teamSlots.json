@@ -1,5 +1,3 @@
-// src/data/teamSlots.json
-
 {
   "Winner Group A": { "code": "1A", "team": null, "flag": null },
   "Winner Group B": { "code": "1B", "team": null, "flag": null },
