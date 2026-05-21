@@ -303,7 +303,7 @@ function MatchModal({ match, onClose }) {
 
           <p className="mt-2">
             <strong>Kick-off (UAE):</strong> {uaeDateLabel}, {match.time_uae}{" "}
-            (Asia/Dubai)
+            (Dubai)
           </p>
 
           {isDifferentUaeDate && (
