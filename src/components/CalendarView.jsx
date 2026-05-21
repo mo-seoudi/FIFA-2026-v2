@@ -1,7 +1,7 @@
 import { Building2, MapPin, Trophy, Users, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
-export default function CalendarView({ fixtures, timeMode }) {
+export default function CalendarView({ fixtures, timeMode, flagMap }) {
   const [calendarMode, setCalendarMode] = useState("teams");
   const [selectedMatch, setSelectedMatch] = useState(null);
 
@@ -105,10 +105,28 @@ export default function CalendarView({ fixtures, timeMode }) {
                               </span>
                             </div>
 
-                            <div className="mt-0.5 truncate text-[11px] font-bold text-neutral-900">
-                              {calendarMode === "teams"
-                                ? `${match.home_team} vs ${match.away_team}`
-                                : match.city}
+                            <div className="mt-1">
+                              {calendarMode === "teams" ? (
+                                <div className="flex items-center justify-center gap-1.5">
+                                  <TeamFlag
+                                    code={flagMap?.[match.home_team]}
+                                    name={match.home_team}
+                                  />
+
+                                  <span className="text-[10px] font-black uppercase text-neutral-400">
+                                    vs
+                                  </span>
+
+                                  <TeamFlag
+                                    code={flagMap?.[match.away_team]}
+                                    name={match.away_team}
+                                  />
+                                </div>
+                              ) : (
+                                <div className="truncate text-[11px] font-bold text-neutral-900">
+                                  {match.city}
+                                </div>
+                              )}
                             </div>
                           </button>
                         ))}
@@ -129,6 +147,20 @@ export default function CalendarView({ fixtures, timeMode }) {
         />
       )}
     </>
+  );
+}
+
+function TeamFlag({ code, name }) {
+  if (!code) {
+    return <span className="text-lg leading-none">🏳️</span>;
+  }
+
+  return (
+    <span
+      aria-label={`${name} flag`}
+      title={`${name} flag`}
+      className={`fi fi-${code} h-4 w-6 rounded-sm shadow-sm`}
+    />
   );
 }
 
