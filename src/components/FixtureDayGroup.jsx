@@ -9,7 +9,7 @@ const bracketPhases = [
   "Round of 16",
   "Quarter-finals",
   "Semi-finals",
-  "Bronze Final",
+  "Third Place Match",
   "Final",
 ];
 
