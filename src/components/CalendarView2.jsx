@@ -9,13 +9,6 @@ const monthOptions = [
   { label: "July 2026", year: 2026, monthIndex: 6 },
 ];
 
-const cityColors = [
-  "bg-slate-400 text-white",
-  "bg-blue-600 text-white",
-  "bg-green-600 text-white",
-  "bg-orange-500 text-white",
-];
-
 export default function CalendarView2({
   fixtures,
   timeMode,
@@ -239,13 +232,13 @@ function ClassicMatchPill({
   fifaCodeMap,
   onClick,
 }) {
-  const colorClass = cityColors[index % cityColors.length];
+  9
 
   if (calendarMode === "cities") {
     return (
       <button
         onClick={onClick}
-        className={`block w-full truncate rounded-md px-1.5 py-1 text-left text-[10px] font-bold transition hover:opacity-90 ${colorClass}`}
+        className="block w-full truncate rounded-md bg-neutral-100 px-1.5 py-1 text-left text-[10px] font-bold text-neutral-800 transition hover:bg-neutral-200"
         title={`${match[timeKey]} · ${match.home_team} vs ${match.away_team}`}
       >
         <span className="mr-1 font-black">{match[timeKey]}</span>
