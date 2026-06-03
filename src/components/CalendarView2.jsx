@@ -169,7 +169,7 @@ export default function CalendarView2({
           </div>
 
           <div className="overflow-x-auto">
-            <div className="min-w-[900px] overflow-hidden rounded-3xl border border-neutral-200">
+            <div className="min-w-[720px] overflow-hidden rounded-3xl border border-neutral-200">
               <div className="grid grid-cols-7 bg-neutral-50 text-center text-sm font-black text-neutral-700">
                 {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
                   <div key={day} className="border-r border-neutral-200 py-3 last:border-r-0">
@@ -182,7 +182,7 @@ export default function CalendarView2({
                 {month.days.map((day) => (
                   <div
                     key={day.key}
-                    className={`min-h-[155px] bg-white p-2 ${
+                    className={`min-h-[115px] bg-white p-1.5 ${
                       day.isCurrentMonth ? "" : "bg-neutral-50 text-neutral-300"
                     }`}
                   >
@@ -245,7 +245,7 @@ function ClassicMatchPill({
     return (
       <button
         onClick={onClick}
-        className={`block w-full truncate rounded-lg px-2 py-1.5 text-left text-xs font-bold transition hover:opacity-90 ${colorClass}`}
+        className={`block w-full truncate rounded-md px-1.5 py-1 text-left text-[10px] font-bold transition hover:opacity-90 ${colorClass}`}
         title={`${match[timeKey]} · ${match.home_team} vs ${match.away_team}`}
       >
         <span className="mr-1 font-black">{match[timeKey]}</span>
@@ -257,7 +257,7 @@ function ClassicMatchPill({
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-center justify-between gap-1 rounded-lg bg-neutral-100 px-2 py-1.5 text-xs font-bold text-neutral-900 transition hover:bg-neutral-200"
+      className="flex w-full items-center justify-between gap-1 rounded-md bg-neutral-100 px-1.5 py-1 text-[10px] font-bold text-neutral-900 transition hover:bg-neutral-200"
       title={`${match[timeKey]} · ${match.home_team} vs ${match.away_team}`}
     >
       <span className="font-black text-[#004b82]">{match[timeKey]}</span>
