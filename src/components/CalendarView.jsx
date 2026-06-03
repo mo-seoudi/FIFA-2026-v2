@@ -275,17 +275,13 @@ function MobileMonthCalendar({ month, selectedDate, onSelectDate }) {
                   : "text-neutral-300"
               } ${
                 isSelected
-                  ? "bg-[#004b82] text-white"
+                  ? "bg-[#004b82]/10 ring-2 ring-[#004b82]"
                   : ""
               }`}
             >
               <div className="flex h-full flex-col justify-between">
-                <span
-                  className={`text-sm font-black ${
-                    isSelected ? "text-white" : ""
-                  }`}
-                >
-                  {day.dayNumber}
+                <span className="text-sm font-black">
+                    {day.dayNumber}
                 </span>
 
                 {hasMatches && (
