@@ -2,6 +2,7 @@ import {
   CalendarDays,
   ChevronDown,
   Globe2,
+  Grid3X3,
   List,
   Search,
   X,
@@ -67,8 +68,8 @@ export default function ScheduleFilters({
         />
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-center">
-        <div className="flex min-h-[44px] items-center gap-2 rounded-2xl border border-neutral-200 bg-white px-3 py-2 text-sm font-semibold text-neutral-600 sm:col-span-2 lg:col-span-1">
+      <div className="mt-4 grid gap-3 lg:flex lg:flex-wrap lg:items-center">
+        <div className="flex min-h-[44px] items-center gap-2 rounded-2xl border border-neutral-200 bg-white px-3 py-2 text-sm font-semibold text-neutral-600">
           <Globe2 size={16} />
 
           <span>
@@ -106,6 +107,11 @@ export default function ScheduleFilters({
               label: "Calendar",
               icon: <CalendarDays size={16} />,
             },
+            {
+              value: "calendar2",
+              label: "Classic",
+              icon: <Grid3X3 size={16} />,
+            },
           ]}
           onChange={setViewMode}
           color="black"
@@ -117,7 +123,11 @@ export default function ScheduleFilters({
 
 function SegmentedControl({ value, options, onChange, color }) {
   return (
-    <div className="grid grid-cols-2 gap-1 rounded-2xl bg-neutral-100 p-1">
+    <div
+      className={`grid gap-1 rounded-2xl bg-neutral-100 p-1 ${
+        options.length === 3 ? "grid-cols-3" : "grid-cols-2"
+      }`}
+    >
       {options.map((option) => {
         const isActive = value === option.value;
 
@@ -125,7 +135,7 @@ function SegmentedControl({ value, options, onChange, color }) {
           <button
             key={option.value}
             onClick={() => onChange(option.value)}
-            className={`flex min-h-[44px] items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-black transition ${
+            className={`flex min-h-[44px] items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-black transition sm:px-4 ${
               isActive
                 ? color === "blue"
                   ? "bg-[#004b82] text-white shadow-sm"
@@ -134,7 +144,8 @@ function SegmentedControl({ value, options, onChange, color }) {
             }`}
           >
             {option.icon}
-            {option.label}
+            <span className="hidden sm:inline">{option.label}</span>
+            <span className="sm:hidden">{option.label}</span>
           </button>
         );
       })}
