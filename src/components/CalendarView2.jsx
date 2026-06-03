@@ -310,7 +310,7 @@ function TeamBadge({ code, name, fifaCode, displayMode }) {
       <span
         aria-label={`${slot.team || name} flag`}
         title={slot.team || name}
-        className={`fi fi-${slot.flag} h-4 w-6 rounded-sm grayscale shadow-sm`}
+        className={`fi fi-${slot.flag} h-4 w-6 rounded-sm shadow-sm`}
       />
     );
   }
@@ -341,7 +341,7 @@ function TeamBadge({ code, name, fifaCode, displayMode }) {
     <span
       aria-label={`${name} flag`}
       title={fifaCode ? `${name} (${fifaCode})` : `${name} flag`}
-      className={`fi fi-${code} h-4 w-6 rounded-sm grayscale shadow-sm`}
+      className={`fi fi-${code} h-4 w-6 rounded-sm shadow-sm`}
     />
   );
 }
@@ -490,7 +490,7 @@ function buildTournamentMonth(year, monthIndex, fixtures, dateKey, timeKey) {
       key,
       dayNumber: current.getDate(),
       isCurrentMonth,
-      matches: isCurrentMonth ? grouped[key] || [] : [],
+      matches: isCurrentMonth ? grouped[key] || [],
     });
 
     current.setDate(current.getDate() + 1);
