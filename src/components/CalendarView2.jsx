@@ -1,4 +1,12 @@
-import { Building2, ChevronLeft, ChevronRight, MapPin, Trophy, Users, X } from "lucide-react";
+import {
+  Building2,
+  ChevronLeft,
+  ChevronRight,
+  MapPin,
+  Trophy,
+  Users,
+  X,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import stadiums from "../data/stadiums.json";
@@ -7,13 +15,6 @@ import teamSlots from "../data/teamSlots.json";
 const monthOptions = [
   { label: "June 2026", year: 2026, monthIndex: 5 },
   { label: "July 2026", year: 2026, monthIndex: 6 },
-];
-
-const cityColors = [
-  "bg-slate-400 text-white",
-  "bg-blue-600 text-white",
-  "bg-green-600 text-white",
-  "bg-orange-500 text-white",
 ];
 
 export default function CalendarView2({
@@ -73,8 +74,8 @@ export default function CalendarView2({
                   onClick={() => setCalendarMode("cities")}
                   className={`flex min-h-[44px] items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-black transition ${
                     calendarMode === "cities"
-                      ? "bg-[#004b82] text-white shadow-sm"
-                      : "text-neutral-600"
+                      ? "bg-neutral-800 text-white shadow-sm"
+                      : "text-neutral-600 hover:bg-neutral-200"
                   }`}
                 >
                   <Building2 size={16} />
@@ -85,8 +86,8 @@ export default function CalendarView2({
                   onClick={() => setCalendarMode("teams")}
                   className={`flex min-h-[44px] items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-black transition ${
                     calendarMode === "teams"
-                      ? "bg-[#004b82] text-white shadow-sm"
-                      : "text-neutral-600"
+                      ? "bg-neutral-800 text-white shadow-sm"
+                      : "text-neutral-600 hover:bg-neutral-200"
                   }`}
                 >
                   <Users size={16} />
@@ -100,8 +101,8 @@ export default function CalendarView2({
                     onClick={() => setTeamDisplayMode("flags")}
                     className={`min-h-[44px] rounded-xl px-4 py-2 text-sm font-black transition ${
                       teamDisplayMode === "flags"
-                        ? "bg-[#004b82] text-white shadow-sm"
-                        : "text-neutral-600"
+                        ? "bg-neutral-800 text-white shadow-sm"
+                        : "text-neutral-600 hover:bg-neutral-200"
                     }`}
                   >
                     Flags
@@ -111,8 +112,8 @@ export default function CalendarView2({
                     onClick={() => setTeamDisplayMode("codes")}
                     className={`min-h-[44px] rounded-xl px-4 py-2 text-sm font-black transition ${
                       teamDisplayMode === "codes"
-                        ? "bg-[#004b82] text-white shadow-sm"
-                        : "text-neutral-600"
+                        ? "bg-neutral-800 text-white shadow-sm"
+                        : "text-neutral-600 hover:bg-neutral-200"
                     }`}
                   >
                     Codes
@@ -133,20 +134,20 @@ export default function CalendarView2({
               <button
                 onClick={goToPreviousMonth}
                 disabled={activeMonthIndex === 0}
-                className="flex min-h-[42px] items-center gap-2 rounded-2xl border border-neutral-200 bg-white px-4 py-2 text-sm font-black text-neutral-700 disabled:opacity-40"
+                className="flex min-h-[42px] items-center gap-2 rounded-2xl border border-neutral-200 bg-white px-4 py-2 text-sm font-black text-neutral-700 transition hover:bg-neutral-100 disabled:opacity-40"
               >
                 <ChevronLeft size={16} />
                 Prev
               </button>
 
-              <div className="min-w-[130px] rounded-2xl bg-neutral-100 px-4 py-2 text-center text-sm font-black">
+              <div className="min-w-[130px] rounded-2xl bg-neutral-100 px-4 py-2 text-center text-sm font-black text-neutral-800">
                 {activeMonth.label}
               </div>
 
               <button
                 onClick={goToNextMonth}
                 disabled={activeMonthIndex === monthOptions.length - 1}
-                className="flex min-h-[42px] items-center gap-2 rounded-2xl border border-neutral-200 bg-white px-4 py-2 text-sm font-black text-neutral-700 disabled:opacity-40"
+                className="flex min-h-[42px] items-center gap-2 rounded-2xl border border-neutral-200 bg-white px-4 py-2 text-sm font-black text-neutral-700 transition hover:bg-neutral-100 disabled:opacity-40"
               >
                 Next
                 <ChevronRight size={16} />
@@ -158,8 +159,8 @@ export default function CalendarView2({
                   onClick={() => setActiveMonthIndex(index)}
                   className={`min-h-[42px] rounded-2xl border px-4 py-2 text-sm font-black transition ${
                     activeMonthIndex === index
-                      ? "border-[#004b82] bg-[#004b82] text-white"
-                      : "border-neutral-200 bg-white text-neutral-700"
+                      ? "border-neutral-800 bg-neutral-800 text-white"
+                      : "border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-100"
                   }`}
                 >
                   {option.label}
@@ -172,13 +173,16 @@ export default function CalendarView2({
             <div className="min-w-[720px] overflow-hidden rounded-3xl border border-neutral-200">
               <div className="grid grid-cols-7 bg-neutral-50 text-center text-sm font-black text-neutral-700">
                 {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-                  <div key={day} className="border-r border-neutral-200 py-3 last:border-r-0">
+                  <div
+                    key={day}
+                    className="border-r border-neutral-200 py-3 last:border-r-0"
+                  >
                     {day}
                   </div>
                 ))}
               </div>
 
-              <div className="grid grid-cols-7 bg-neutral-200 gap-px">
+              <div className="grid grid-cols-7 gap-px bg-neutral-200">
                 {month.days.map((day) => (
                   <div
                     key={day.key}
@@ -239,13 +243,16 @@ function ClassicMatchPill({
   fifaCodeMap,
   onClick,
 }) {
-  const colorClass = cityColors[index % cityColors.length];
+  const colorClass =
+    index % 2 === 0
+      ? "bg-neutral-200 text-neutral-800 border border-neutral-300 hover:bg-neutral-300"
+      : "bg-neutral-100 text-neutral-800 border border-neutral-300 hover:bg-neutral-200";
 
   if (calendarMode === "cities") {
     return (
       <button
         onClick={onClick}
-        className={`block w-full truncate rounded-md px-1.5 py-1 text-left text-[10px] font-bold transition hover:opacity-90 ${colorClass}`}
+        className={`block w-full truncate rounded-md px-1.5 py-1 text-left text-[10px] font-bold transition ${colorClass}`}
         title={`${match[timeKey]} · ${match.home_team} vs ${match.away_team}`}
       >
         <span className="mr-1 font-black">{match[timeKey]}</span>
@@ -257,10 +264,10 @@ function ClassicMatchPill({
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-center justify-between gap-1 rounded-md bg-neutral-100 px-1.5 py-1 text-[10px] font-bold text-neutral-900 transition hover:bg-neutral-200"
+      className="flex w-full items-center justify-between gap-1 rounded-md border border-neutral-300 bg-neutral-100 px-1.5 py-1 text-[10px] font-bold text-neutral-900 transition hover:bg-neutral-200"
       title={`${match[timeKey]} · ${match.home_team} vs ${match.away_team}`}
     >
-      <span className="font-black text-[#004b82]">{match[timeKey]}</span>
+      <span className="font-black text-neutral-700">{match[timeKey]}</span>
 
       <div className="flex min-w-0 items-center gap-1">
         <TeamBadge
@@ -291,7 +298,7 @@ function TeamBadge({ code, name, fifaCode, displayMode }) {
     return (
       <span
         title={slot?.team || name}
-        className="flex h-4 min-w-8 items-center justify-center rounded-sm bg-white/80 px-1 text-[8px] font-black leading-none text-neutral-700 shadow-sm"
+        className="flex h-4 min-w-8 items-center justify-center rounded-sm bg-neutral-100 px-1 text-[8px] font-black leading-none text-neutral-700 shadow-sm"
       >
         {label}
       </span>
@@ -303,7 +310,7 @@ function TeamBadge({ code, name, fifaCode, displayMode }) {
       <span
         aria-label={`${slot.team || name} flag`}
         title={slot.team || name}
-        className={`fi fi-${slot.flag} h-4 w-6 rounded-sm shadow-sm`}
+        className={`fi fi-${slot.flag} h-4 w-6 rounded-sm grayscale shadow-sm`}
       />
     );
   }
@@ -312,7 +319,7 @@ function TeamBadge({ code, name, fifaCode, displayMode }) {
     return (
       <span
         title={name}
-        className="flex h-4 min-w-7 items-center justify-center rounded-sm bg-white/80 px-1 text-[8px] font-black leading-none text-neutral-700 shadow-sm"
+        className="flex h-4 min-w-7 items-center justify-center rounded-sm bg-neutral-100 px-1 text-[8px] font-black leading-none text-neutral-700 shadow-sm"
       >
         {slot.code}
       </span>
@@ -323,7 +330,7 @@ function TeamBadge({ code, name, fifaCode, displayMode }) {
     return (
       <span
         title={name}
-        className="flex h-4 min-w-7 items-center justify-center rounded-sm bg-white/80 px-1 text-[8px] font-black leading-none text-neutral-700 shadow-sm"
+        className="flex h-4 min-w-7 items-center justify-center rounded-sm bg-neutral-100 px-1 text-[8px] font-black leading-none text-neutral-700 shadow-sm"
       >
         TBD
       </span>
@@ -334,7 +341,7 @@ function TeamBadge({ code, name, fifaCode, displayMode }) {
     <span
       aria-label={`${name} flag`}
       title={fifaCode ? `${name} (${fifaCode})` : `${name} flag`}
-      className={`fi fi-${code} h-4 w-6 rounded-sm shadow-sm`}
+      className={`fi fi-${code} h-4 w-6 rounded-sm grayscale shadow-sm`}
     />
   );
 }
@@ -376,7 +383,7 @@ function MatchModal({ match, onClose }) {
               Match #{match.match_number}
             </p>
 
-            <h2 className="mt-1 text-2xl font-black tracking-tight text-[#07162f]">
+            <h2 className="mt-1 text-2xl font-black tracking-tight text-neutral-900">
               {match.home_team} vs {match.away_team}
             </h2>
 
@@ -395,7 +402,7 @@ function MatchModal({ match, onClose }) {
           </button>
         </div>
 
-        <div className="rounded-2xl bg-neutral-100 p-4 text-sm">
+        <div className="rounded-2xl bg-neutral-100 p-4 text-sm text-neutral-800">
           <p>
             <strong>Kick-off (Local):</strong> {localDateLabel},{" "}
             {match.time_local} ({match.city})
@@ -407,7 +414,7 @@ function MatchModal({ match, onClose }) {
           </p>
 
           {isDifferentUaeDate && (
-            <p className="mt-2 text-xs font-bold text-[#004b82]">
+            <p className="mt-2 text-xs font-bold text-neutral-700">
               This match falls on a different calendar date in UAE time.
             </p>
           )}
@@ -436,7 +443,7 @@ function MatchModal({ match, onClose }) {
 function DetailRow({ icon, label, value }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="text-[#004b82]">{icon}</span>
+      <span className="text-neutral-500">{icon}</span>
       <strong className="min-w-[70px] text-neutral-900">{label}:</strong>
       <span className="text-neutral-600">{value}</span>
     </div>
