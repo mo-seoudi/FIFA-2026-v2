@@ -1,4 +1,4 @@
-import { Building2, CalendarDays, MapPin, Trophy, Users, X } from "lucide-react";
+import { Building2, MapPin, Trophy, Users, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import teamSlots from "../data/teamSlots.json";
@@ -13,6 +13,7 @@ export default function CalendarView({
   const [calendarMode, setCalendarMode] = useState("cities");
   const [teamDisplayMode, setTeamDisplayMode] = useState("flags");
   const [selectedMatch, setSelectedMatch] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const dateKey = timeMode === "uae" ? "date_uae" : "date";
   const timeKey = timeMode === "uae" ? "time_uae" : "time_local";
@@ -24,9 +25,21 @@ export default function CalendarView({
     ];
   }, [fixtures, dateKey, timeKey]);
 
-  const groupedDays = useMemo(() => {
-    return groupMatchesByDate(fixtures, dateKey, timeKey);
-  }, [fixtures, dateKey, timeKey]);
+  useEffect(() => {
+    if (!selectedDate && months[0]) {
+      const firstMatchDay = months
+        .flatMap((month) => month.days)
+        .find((day) => day.isCurrentMonth && day.matches.length > 0);
+
+      if (firstMatchDay) {
+        setSelectedDate(firstMatchDay.key);
+      }
+    }
+  }, [months, selectedDate]);
+
+  const selectedDay = months
+    .flatMap((month) => month.days)
+    .find((day) => day.key === selectedDate);
 
   return (
     <>
@@ -99,12 +112,20 @@ export default function CalendarView({
           </div>
         </div>
 
-        {/* Mobile agenda view */}
-        <div className="space-y-4 md:hidden">
-          {groupedDays.map((day) => (
-            <MobileCalendarDay
-              key={day.date}
-              day={day}
+        {/* Mobile real calendar */}
+        <div className="space-y-5 md:hidden">
+          {months.map((month) => (
+            <MobileMonthCalendar
+              key={month.key}
+              month={month}
+              selectedDate={selectedDate}
+              onSelectDate={setSelectedDate}
+            />
+          ))}
+
+          {selectedDay && (
+            <MobileSelectedDayMatches
+              day={selectedDay}
               timeKey={timeKey}
               calendarMode={calendarMode}
               teamDisplayMode={teamDisplayMode}
@@ -112,7 +133,7 @@ export default function CalendarView({
               fifaCodeMap={fifaCodeMap}
               onSelectMatch={setSelectedMatch}
             />
-          ))}
+          )}
         </div>
 
         {/* Desktop calendar grid */}
@@ -217,7 +238,77 @@ export default function CalendarView({
   );
 }
 
-function MobileCalendarDay({
+function MobileMonthCalendar({ month, selectedDate, onSelectDate }) {
+  return (
+    <section className="overflow-hidden rounded-3xl bg-white shadow-sm">
+      <div className="border-b border-neutral-100 px-4 py-4">
+        <h3 className="text-xl font-black tracking-tight text-[#07162f]">
+          {month.label}
+        </h3>
+      </div>
+
+      <div className="grid grid-cols-7 bg-neutral-50 text-center text-[11px] font-black text-neutral-500">
+        {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => (
+          <div key={`${day}-${index}`} className="py-2">
+            {day}
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-px bg-neutral-200">
+        {month.days.map((day) => {
+          const hasMatches = day.matches.length > 0;
+          const isSelected = selectedDate === day.key;
+
+          return (
+            <button
+              key={day.key}
+              disabled={!day.isCurrentMonth || !hasMatches}
+              onClick={() => onSelectDate(day.key)}
+              className={`min-h-[58px] bg-white p-1.5 text-left transition ${
+                !day.isCurrentMonth
+                  ? "bg-neutral-50 text-neutral-300"
+                  : "text-neutral-900"
+              } ${
+                hasMatches
+                  ? "active:scale-[0.98]"
+                  : "text-neutral-300"
+              } ${
+                isSelected
+                  ? "bg-[#004b82] text-white"
+                  : ""
+              }`}
+            >
+              <div className="flex h-full flex-col justify-between">
+                <span
+                  className={`text-sm font-black ${
+                    isSelected ? "text-white" : ""
+                  }`}
+                >
+                  {day.dayNumber}
+                </span>
+
+                {hasMatches && (
+                  <span
+                    className={`inline-flex h-5 min-w-5 items-center justify-center self-end rounded-full px-1 text-[10px] font-black ${
+                      isSelected
+                        ? "bg-white text-[#004b82]"
+                        : "bg-[#004b82]/10 text-[#004b82]"
+                    }`}
+                  >
+                    {day.matches.length}
+                  </span>
+                )}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function MobileSelectedDayMatches({
   day,
   timeKey,
   calendarMode,
@@ -226,118 +317,99 @@ function MobileCalendarDay({
   fifaCodeMap,
   onSelectMatch,
 }) {
-  const [isOpen, setIsOpen] = useState(true);
-
   return (
-    <section className="overflow-hidden rounded-3xl bg-white shadow-sm">
-      <button
-        onClick={() => setIsOpen((value) => !value)}
-        className="flex w-full items-center justify-between gap-4 border-b border-neutral-100 px-4 py-4 text-left"
-      >
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-2xl bg-[#004b82]/10 text-[#004b82]">
-            <span className="text-xs font-black uppercase">
-              {day.monthShort}
-            </span>
-            <span className="text-lg font-black leading-none">
-              {day.dayNumber}
-            </span>
-          </div>
+    <section className="rounded-3xl bg-white p-4 shadow-sm">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <h3 className="text-lg font-black text-neutral-950">
+            {formatDate(day.key)}
+          </h3>
 
-          <div>
-            <h3 className="font-black text-neutral-950">{day.weekday}</h3>
-            <p className="text-sm font-semibold text-neutral-500">
-              {day.matches.length} {day.matches.length === 1 ? "match" : "matches"}
-            </p>
-          </div>
+          <p className="text-sm font-semibold text-neutral-500">
+            {day.matches.length} {day.matches.length === 1 ? "match" : "matches"}
+          </p>
         </div>
+      </div>
 
-        <span className="text-sm font-black text-[#004b82]">
-          {isOpen ? "Hide" : "Show"}
-        </span>
-      </button>
+      <div className="space-y-3">
+        {day.matches.map((match) => {
+          const realVenue = stadiums[match.city] || match.venue;
 
-      {isOpen && (
-        <div className="space-y-2 p-3">
-          {day.matches.map((match) => {
-            const realVenue = stadiums[match.city] || match.venue;
+          return (
+            <button
+              key={match.match_number}
+              onClick={() => onSelectMatch(match)}
+              className="w-full rounded-2xl border border-neutral-100 bg-neutral-50 p-3 text-left transition active:scale-[0.99]"
+            >
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-black text-neutral-400">
+                  M{match.match_number}
+                </span>
 
-            return (
-              <button
-                key={match.match_number}
-                onClick={() => onSelectMatch(match)}
-                className="w-full rounded-2xl border border-neutral-100 bg-neutral-50 p-3 text-left transition active:scale-[0.99]"
-              >
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-black text-neutral-400">
-                    M{match.match_number}
-                  </span>
+                <span className="rounded-full bg-[#004b82]/10 px-3 py-1 text-sm font-black text-[#004b82]">
+                  {match[timeKey]}
+                </span>
+              </div>
 
-                  <span className="rounded-full bg-[#004b82]/10 px-3 py-1 text-sm font-black text-[#004b82]">
-                    {match[timeKey]}
-                  </span>
+              {calendarMode === "teams" ? (
+                <div className="space-y-2">
+                  <MobileTeamLine
+                    name={match.home_team}
+                    code={flagMap?.[match.home_team]}
+                    fifaCode={fifaCodeMap?.[match.home_team]}
+                    displayMode={teamDisplayMode}
+                  />
+
+                  <div className="flex items-center gap-3">
+                    <div className="h-px flex-1 bg-neutral-200" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.18em] text-neutral-400">
+                      vs
+                    </span>
+                    <div className="h-px flex-1 bg-neutral-200" />
+                  </div>
+
+                  <MobileTeamLine
+                    name={match.away_team}
+                    code={flagMap?.[match.away_team]}
+                    fifaCode={fifaCodeMap?.[match.away_team]}
+                    displayMode={teamDisplayMode}
+                  />
                 </div>
+              ) : (
+                <div>
+                  <p className="text-lg font-black text-neutral-950">
+                    {match.city}
+                  </p>
 
-                {calendarMode === "teams" ? (
-                  <div className="space-y-2">
-                    <MobileTeamLine
-                      name={match.home_team}
-                      code={flagMap?.[match.home_team]}
-                      fifaCode={fifaCodeMap?.[match.home_team]}
-                      displayMode={teamDisplayMode}
-                    />
+                  <p className="mt-1 text-sm font-semibold text-neutral-500">
+                    {realVenue}
+                  </p>
+                </div>
+              )}
 
-                    <div className="flex items-center gap-3">
-                      <div className="h-px flex-1 bg-neutral-200" />
-                      <span className="text-[10px] font-black uppercase tracking-[0.18em] text-neutral-400">
-                        vs
-                      </span>
-                      <div className="h-px flex-1 bg-neutral-200" />
-                    </div>
+              <div className="mt-3 flex flex-wrap gap-1.5 text-xs font-bold text-neutral-500">
+                <span>{match.phase}</span>
 
-                    <MobileTeamLine
-                      name={match.away_team}
-                      code={flagMap?.[match.away_team]}
-                      fifaCode={fifaCodeMap?.[match.away_team]}
-                      displayMode={teamDisplayMode}
-                    />
-                  </div>
-                ) : (
-                  <div>
-                    <p className="text-lg font-black text-neutral-950">
-                      {match.city}
-                    </p>
-
-                    <p className="mt-1 text-sm font-semibold text-neutral-500">
-                      {realVenue}
-                    </p>
-                  </div>
+                {match.group && (
+                  <>
+                    <span>·</span>
+                    <span>{match.group}</span>
+                  </>
                 )}
 
-                <div className="mt-3 flex flex-wrap gap-1.5 text-xs font-bold text-neutral-500">
-                  <span>{match.phase}</span>
-
-                  {match.group && (
-                    <>
-                      <span>·</span>
-                      <span>{match.group}</span>
-                    </>
-                  )}
-
-                  {calendarMode === "teams" && (
-                    <>
-                      <span>·</span>
-                      <span>{realVenue}</span>
-                      <span>·</span>
-                      <span>{match.city}</span>
-                    </>
-                  )}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      )}
+                {calendarMode === "teams" && (
+                  <>
+                    <span>·</span>
+                    <span>{realVenue}</span>
+                    <span>·</span>
+                    <span>{match.city}</span>
+                  </>
+                )}
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </section>
   );
 }
@@ -450,10 +522,7 @@ function MatchModal({ match, onClose }) {
 
   const localDateLabel = formatDate(match.date);
   const uaeDateLabel = formatDate(match.date_uae || match.date);
-
-  const isDifferentUaeDate =
-    match.date_uae && match.date_uae !== match.date;
-
+  const isDifferentUaeDate = match.date_uae && match.date_uae !== match.date;
   const realVenue = stadiums[match.city] || match.venue;
 
   return (
@@ -546,9 +615,7 @@ function DetailRow({ icon, label, value }) {
   return (
     <div className="flex items-center gap-3">
       <span className="text-[#004b82]">{icon}</span>
-
       <strong className="min-w-[70px] text-neutral-900">{label}:</strong>
-
       <span className="text-neutral-600">{value}</span>
     </div>
   );
@@ -580,18 +647,14 @@ function buildTournamentMonth(year, monthIndex, fixtures, dateKey, timeKey) {
   const lastOfMonth = new Date(year, monthIndex + 1, 0);
 
   const startOffset = (firstOfMonth.getDay() + 6) % 7;
-
   const calendarStart = new Date(firstOfMonth);
-
   calendarStart.setDate(firstOfMonth.getDate() - startOffset);
 
   const days = [];
-
   const current = new Date(calendarStart);
 
   while (current <= lastOfMonth || days.length % 7 !== 0) {
     const key = toDateKey(current);
-
     const isCurrentMonth = current.getMonth() === monthIndex;
 
     days.push({
@@ -606,53 +669,12 @@ function buildTournamentMonth(year, monthIndex, fixtures, dateKey, timeKey) {
 
   return {
     key: `${year}-${String(monthIndex + 1).padStart(2, "0")}`,
-
     label: new Intl.DateTimeFormat("en-GB", {
       month: "long",
       year: "numeric",
     }).format(firstOfMonth),
-
     days,
   };
-}
-
-function groupMatchesByDate(fixtures, dateKey, timeKey) {
-  const grouped = fixtures.reduce((acc, match) => {
-    const displayDate = match[dateKey] || match.date;
-
-    if (!acc[displayDate]) {
-      acc[displayDate] = [];
-    }
-
-    acc[displayDate].push(match);
-
-    return acc;
-  }, {});
-
-  return Object.entries(grouped)
-    .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
-    .map(([date, matches]) => {
-      const sortedMatches = [...matches].sort((a, b) => {
-        const aTime = a[timeKey] || "";
-        const bTime = b[timeKey] || "";
-
-        return aTime.localeCompare(bTime);
-      });
-
-      const parsedDate = new Date(`${date}T12:00:00`);
-
-      return {
-        date,
-        dayNumber: parsedDate.getDate(),
-        weekday: new Intl.DateTimeFormat("en-GB", {
-          weekday: "long",
-        }).format(parsedDate),
-        monthShort: new Intl.DateTimeFormat("en-GB", {
-          month: "short",
-        }).format(parsedDate),
-        matches: sortedMatches,
-      };
-    });
 }
 
 function formatDate(dateString) {
@@ -668,9 +690,7 @@ function formatDate(dateString) {
 
 function toDateKey(date) {
   const year = date.getFullYear();
-
   const month = String(date.getMonth() + 1).padStart(2, "0");
-
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
