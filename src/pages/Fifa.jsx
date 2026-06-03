@@ -7,6 +7,7 @@ import Header from "../components/Header.jsx";
 import ScheduleFilters from "../components/ScheduleFilters.jsx";
 import FixtureDayGroup from "../components/FixtureDayGroup.jsx";
 import CalendarView from "../components/CalendarView.jsx";
+import CalendarView2 from "../components/CalendarView2.jsx";
 
 const flagMap = Object.fromEntries(
   Object.entries(teams).map(([teamName, data]) => [teamName, data.flag])
@@ -102,8 +103,15 @@ export default function Fifa() {
               />
             ))}
           </section>
-        ) : (
+        ) : viewMode === "calendar" ? (
           <CalendarView
+            fixtures={sortedFixtures}
+            timeMode={timeMode}
+            flagMap={flagMap}
+            fifaCodeMap={fifaCodeMap}
+          />
+        ) : (
+          <CalendarView2
             fixtures={sortedFixtures}
             timeMode={timeMode}
             flagMap={flagMap}
