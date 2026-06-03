@@ -39,7 +39,7 @@ export default function CalendarView({
 
   const selectedDay = months
     .flatMap((month) => month.days)
-    .find((day) => day.key === selectedDate);
+    .find((day) => day.key === selectedDate && day.isCurrentMonth);
 
   return (
     <>
