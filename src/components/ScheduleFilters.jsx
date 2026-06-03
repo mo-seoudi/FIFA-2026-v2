@@ -12,16 +12,19 @@ export default function ScheduleFilters({
   setViewMode,
 }) {
   return (
-    <section className="mb-7 rounded-3xl bg-white p-5 shadow-sm">
-      <div className="grid gap-4 md:grid-cols-[1fr_auto_auto] md:items-center">
+    <section className="mb-6 rounded-3xl bg-white p-4 shadow-sm sm:p-5">
+      <div className="grid gap-4 lg:grid-cols-[1fr_auto_auto] lg:items-center">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Match Schedule</h2>
+          <h2 className="text-xl font-black tracking-tight text-neutral-950 sm:text-2xl">
+            Match Schedule
+          </h2>
+
           <p className="mt-1 text-sm text-neutral-500">
-            Base schedule uses local stadium time. UAE time is shown as a secondary display.
+            Base schedule uses local stadium time. UAE time is available too.
           </p>
         </div>
 
-        <label className="relative block min-w-[260px]">
+        <label className="relative block w-full lg:min-w-[300px]">
           <Search
             className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
             size={18}
@@ -31,38 +34,25 @@ export default function ScheduleFilters({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search team, city, venue..."
-            className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 py-3 pl-10 pr-4 text-sm outline-none transition focus:border-[#004b82] focus:bg-white"
+            className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 py-3 pl-10 pr-4 text-sm font-semibold outline-none transition focus:border-[#004b82] focus:bg-white"
           />
         </label>
 
-        <div className="flex gap-2 rounded-2xl bg-neutral-100 p-1">
-          <button
-            onClick={() => setTimeMode("local")}
-            className={`rounded-xl px-4 py-2 text-sm font-bold transition ${
-              timeMode === "local"
-                ? "bg-[#004b82] text-white shadow-sm"
-                : "text-neutral-600"
-            }`}
-          >
-            Local
-          </button>
-
-          <button
-            onClick={() => setTimeMode("uae")}
-            className={`rounded-xl px-4 py-2 text-sm font-bold transition ${
-              timeMode === "uae"
-                ? "bg-[#004b82] text-white shadow-sm"
-                : "text-neutral-600"
-            }`}
-          >
-            UAE
-          </button>
-        </div>
+        <SegmentedControl
+          value={timeMode}
+          options={[
+            { value: "local", label: "Local" },
+            { value: "uae", label: "UAE" },
+          ]}
+          onChange={setTimeMode}
+          color="blue"
+        />
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2 rounded-2xl border border-neutral-200 bg-white px-3 py-2 text-sm font-semibold text-neutral-600">
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-center">
+        <div className="flex min-h-[44px] items-center gap-2 rounded-2xl border border-neutral-200 bg-white px-3 py-2 text-sm font-semibold text-neutral-600 sm:col-span-2 lg:col-span-1">
           <Globe2 size={16} />
+
           <span>
             {timeMode === "local"
               ? "Showing local stadium time"
@@ -74,7 +64,7 @@ export default function ScheduleFilters({
           <select
             value={groupFilter}
             onChange={(event) => setGroupFilter(event.target.value)}
-            className="appearance-none rounded-2xl border border-neutral-200 bg-white py-2 pl-4 pr-10 text-sm font-semibold outline-none focus:border-[#004b82]"
+            className="min-h-[44px] w-full appearance-none rounded-2xl border border-neutral-200 bg-white py-2 pl-4 pr-10 text-sm font-bold outline-none focus:border-[#004b82] lg:w-auto lg:min-w-[160px]"
           >
             {groups.map((group) => (
               <option key={group} value={group}>
@@ -89,32 +79,47 @@ export default function ScheduleFilters({
           />
         </div>
 
-        <div className="flex gap-2 rounded-2xl bg-neutral-100 p-1">
-          <button
-            onClick={() => setViewMode("list")}
-            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
-              viewMode === "list"
-                ? "bg-black text-white shadow-sm"
-                : "text-neutral-600"
-            }`}
-          >
-            <List size={16} />
-            List
-          </button>
-
-          <button
-            onClick={() => setViewMode("calendar")}
-            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
-              viewMode === "calendar"
-                ? "bg-black text-white shadow-sm"
-                : "text-neutral-600"
-            }`}
-          >
-            <CalendarDays size={16} />
-            Calendar
-          </button>
-        </div>
+        <SegmentedControl
+          value={viewMode}
+          options={[
+            { value: "list", label: "List", icon: <List size={16} /> },
+            {
+              value: "calendar",
+              label: "Calendar",
+              icon: <CalendarDays size={16} />,
+            },
+          ]}
+          onChange={setViewMode}
+          color="black"
+        />
       </div>
     </section>
+  );
+}
+
+function SegmentedControl({ value, options, onChange, color }) {
+  return (
+    <div className="grid grid-cols-2 gap-1 rounded-2xl bg-neutral-100 p-1">
+      {options.map((option) => {
+        const isActive = value === option.value;
+
+        return (
+          <button
+            key={option.value}
+            onClick={() => onChange(option.value)}
+            className={`flex min-h-[44px] items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-black transition ${
+              isActive
+                ? color === "blue"
+                  ? "bg-[#004b82] text-white shadow-sm"
+                  : "bg-black text-white shadow-sm"
+                : "text-neutral-600"
+            }`}
+          >
+            {option.icon}
+            {option.label}
+          </button>
+        );
+      })}
+    </div>
   );
 }
