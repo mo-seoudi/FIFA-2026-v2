@@ -1,4 +1,11 @@
-import { CalendarDays, ChevronDown, Globe2, List, Search } from "lucide-react";
+import {
+  CalendarDays,
+  ChevronDown,
+  Globe2,
+  List,
+  Search,
+  X,
+} from "lucide-react";
 
 export default function ScheduleFilters({
   query,
@@ -34,8 +41,19 @@ export default function ScheduleFilters({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search team, city, venue..."
-            className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 py-3 pl-10 pr-4 text-sm font-semibold outline-none transition focus:border-[#004b82] focus:bg-white"
+            className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 py-3 pl-10 pr-10 text-sm font-semibold outline-none transition focus:border-[#004b82] focus:bg-white"
           />
+
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-neutral-400 transition hover:bg-neutral-200 hover:text-neutral-700"
+              aria-label="Clear search"
+            >
+              <X size={16} />
+            </button>
+          )}
         </label>
 
         <SegmentedControl
